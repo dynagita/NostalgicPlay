@@ -84,8 +84,71 @@ namespace NostalgicPlay
             __selectedGamePanel.Image = consoleSelected.Image;
         }
 
+        private void JumpGamesForward()
+        {
+            int qttGames = _roms.Count;
+            int selectedIndex = _romList.SelectedIndex;
+
+            int howManyGamesToJump = qttGames / 15;
+
+            selectedIndex += howManyGamesToJump;
+
+            if (selectedIndex > _roms.Count -1)
+            {
+                selectedIndex = selectedIndex - (_roms.Count - 1);
+                
+            }
+
+            _romList.SelectedIndex = selectedIndex;
+
+        }
+
+        private void JumpGamesBackward()
+        {
+            int qttGames = _roms.Count;
+            int selectedIndex = _romList.SelectedIndex;
+
+            int howManyGamesToJump = qttGames / 15;
+
+            selectedIndex -= howManyGamesToJump;
+
+            if (selectedIndex < 0)
+            {
+                selectedIndex = (_roms.Count - 1) + selectedIndex;
+
+            }
+
+            _romList.SelectedIndex = selectedIndex;
+
+        }
+
+        public void MoveForward()
+        {
+            if (_gamesPanel.Visible)
+            {
+                JumpGamesForward();
+            }
+            else
+            {
+                MoveSelectedForward();
+            }
+        }
+
+        public void MoveBackward()
+        {
+            if (_gamesPanel.Visible)
+            {
+                JumpGamesBackward();
+            }
+            else
+            {
+                MoveSelectedBackward();
+            }
+        }
+
         public void MoveSelectedForward()
         {
+
             var selectedIndex = GetSelectedConsoleIndex();
 
             if (selectedIndex == Consoles.Count - 1)
@@ -103,6 +166,7 @@ namespace NostalgicPlay
             }
 
             SetSelectedGamePanel();
+
         }
 
         public void MoveSelectedBackward()
@@ -168,7 +232,7 @@ namespace NostalgicPlay
                     _romList.Focus();
                     _romList.SelectedIndex = 0;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -182,7 +246,7 @@ namespace NostalgicPlay
             CloseGameConsole();
         }
 
-        public void CloseGameConsole() 
+        public void CloseGameConsole()
         {
             if (_gamesPanel.Visible)
             {
@@ -253,16 +317,12 @@ namespace NostalgicPlay
                 Utils.ShowError($"Rom wasn't found.");
                 return;
             }
-            _joystick.Stop();
             _console.Play(selectedRom);
         }
 
-        private void NostalgicPlay_Activated(object sender, EventArgs e)
+        public void StopSelectedGame()
         {
-            if (!_joystick.IsRunning())
-            {
-                _joystick.Start();
-            }
+            _console.Stop();
         }
     }
 }

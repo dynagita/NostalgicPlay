@@ -10,6 +10,8 @@ namespace NostalgicPlay.Objects
     {
         void Play(Rom rom);
 
+        void Stop();
+
         List<Rom> ListRoms();
     }
 }

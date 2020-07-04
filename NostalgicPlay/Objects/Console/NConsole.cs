@@ -10,7 +10,8 @@ namespace NostalgicPlay.Objects
 {
     public abstract class NConsole : INConsole
     {
-
+        private Process _consoleProcess = null;
+        private bool _playing = false;
         private bool IsImagePath(string path)
         {
             return Utils.IsImagePath(path);
@@ -102,12 +103,26 @@ namespace NostalgicPlay.Objects
 
         public void Play(Rom rom)
         {
-            
-            Process consoleProcess = new Process();
-            consoleProcess.StartInfo.FileName = Executable;
-            consoleProcess.StartInfo.Arguments = GetExutableArguments(rom);
-            consoleProcess.Start();
+            if (!_playing)
+            {
+                _consoleProcess = new Process();
+                _consoleProcess.StartInfo.FileName = Executable;
+                _consoleProcess.StartInfo.Arguments = GetExutableArguments(rom);
+                _playing = true;
+                _consoleProcess.Start();
+            }
+        }
 
+        public void Stop()
+        {
+            if (_playing)
+            {
+                _consoleProcess.CloseMainWindow();
+                _consoleProcess.Close();
+                _consoleProcess.Dispose();
+                _consoleProcess = null;
+                _playing = false;
+            }
         }
 
         public List<Rom> ListRoms()
