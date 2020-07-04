@@ -16,14 +16,6 @@ namespace NostalgicPlay.Objects
             }
         }
 
-        protected override string ConsoleExecutable
-        {
-            get
-            {
-                return "sness.exe";
-            }
-        }
-
         protected override string GetExutableArguments(Rom rom)
         {
             return $"-fullscreen \"{rom.GetRomPath()}\"";

@@ -30,7 +30,7 @@ namespace NostalgicPlay.Objects
 
         private void SetRomName(string fullPath)
         {
-            var splitted = fullPath.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            var splitted = fullPath.Split(new string[] { ".", "\\" }, StringSplitOptions.RemoveEmptyEntries);
             _romName = splitted[splitted.Length - 2];
         }
 

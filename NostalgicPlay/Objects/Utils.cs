@@ -62,5 +62,14 @@ namespace NostalgicPlay.Objects
                 return NConsoleEnum.Indefinido;
             }
         }
+
+        public static void ShowError(string message)
+        {
+            System
+                .Windows
+                .Forms
+                .MessageBox
+                .Show(message, "Erro", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        }
     }
 }

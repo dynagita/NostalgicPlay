@@ -16,17 +16,9 @@ namespace NostalgicPlay.Objects
             }
         }
         
-        protected override string ConsoleExecutable
-        {
-            get
-            {
-                return "gens.exe";
-            }
-        }
-
         protected override string GetExutableArguments(Rom rom)
         {
-            return $"\"{rom.GetRomPath()}\"";
+            return $"\"{rom.GetRomPath()}\" -gens -fullscreen";
         }
     }
 }

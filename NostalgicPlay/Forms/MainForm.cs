@@ -17,11 +17,15 @@ namespace NostalgicPlay
         List<ConsolesInfo> Consoles { get; set; } = new List<ConsolesInfo>();
 
         INConsole _console = null;
+        List<Rom> _roms = new List<Rom>();
+        NJoystick _joystick;
 
         public NostalgicPlay()
         {
+            _joystick = new NJoystick(this);
             InitializeComponent();
             LoadConsoles();
+            _joystick.Start();
         }
 
         private void __selectedGamePanel_Click(object sender, EventArgs e)
@@ -64,7 +68,7 @@ namespace NostalgicPlay
             }
             catch (Exception ex)
             {
-                ShowError(ex.Message);
+                Utils.ShowError(ex.Message);
             }
 
         }
@@ -74,18 +78,13 @@ namespace NostalgicPlay
             var consoleSelected = Consoles.FirstOrDefault(x => x.Selected);
             if (consoleSelected == null)
             {
-                ShowError($"{nameof(SetSelectedGamePanel)}: Does not exists a console selected.");
+                Utils.ShowError($"{nameof(SetSelectedGamePanel)}: Does not exists a console selected.");
                 return;
             }
             __selectedGamePanel.Image = consoleSelected.Image;
         }
 
-        private void ShowError(string message)
-        {
-            MessageBox.Show(message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void MoveSelectedForward()
+        public void MoveSelectedForward()
         {
             var selectedIndex = GetSelectedConsoleIndex();
 
@@ -106,7 +105,7 @@ namespace NostalgicPlay
             SetSelectedGamePanel();
         }
 
-        private void MoveSelectedBackward()
+        public void MoveSelectedBackward()
         {
             var selectedIndex = GetSelectedConsoleIndex();
 
@@ -142,42 +141,128 @@ namespace NostalgicPlay
             MoveSelectedBackward();
         }
 
-        private void ShowGameConsole()
+        public void ShowGameConsole()
         {
             try
             {
-                var selectedConsole = Consoles.FirstOrDefault(x => x.Selected);
-
-                if (selectedConsole == null)
+                if (!_gamesPanel.Visible)
                 {
-                    ShowError($"{nameof(SetSelectedGamePanel)}: Does not exists a console selected.");
-                    return;
+                    var selectedConsole = Consoles.FirstOrDefault(x => x.Selected);
+
+                    if (selectedConsole == null)
+                    {
+                        Utils.ShowError($"{nameof(SetSelectedGamePanel)}: Does not exists a console selected.");
+                        return;
+                    }
+
+                    _console = NConsoleFactory.CreateConsole(selectedConsole.NConsole);
+
+                    _roms = _console.ListRoms();
+
+                    foreach (var item in _roms)
+                    {
+                        _romList.Items.Add(item.GetRomName());
+                    }
+
+                    _gamesPanel.Visible = true;
+                    _romList.Focus();
+                    _romList.SelectedIndex = 0;
                 }
-
-                _console = NConsoleFactory.CreateConsole(selectedConsole.NConsole);
-
-                //var roms = _console.ListRoms();
-
-                //foreach (var item in roms)
-                //{
-                //    _romList.Items.Add(item.ToString());
-                //}
-
-                _gamesPanel.Visible = true;
+                
             }
             catch (Exception ex)
             {
 
-                ShowError($"{nameof(ShowGameConsole)}: Couldn't list roms: {ex.Message}");
-            }            
+                Utils.ShowError($"{nameof(ShowGameConsole)}: Couldn't list roms: {ex.Message}");
+            }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void _closeGamePanel_Click(object sender, EventArgs e)
         {
-            _console = null;
-            _romList.Items.Clear();
-            _gameImage.Image = null;
-            _gamesPanel.Visible = false;
+            CloseGameConsole();
+        }
+
+        public void CloseGameConsole() 
+        {
+            if (_gamesPanel.Visible)
+            {
+                _console = null;
+                _romList.Items.Clear();
+                _gameImage.Image = null;
+                _gamesPanel.Visible = false;
+            }
+        }
+
+        private void _romList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var listBox = (ListBox)sender;
+            var auxiliar = _roms.FirstOrDefault(x => x.GetRomName().Equals(listBox.SelectedItem.ToString()));
+            if (auxiliar != null)
+            {
+                _gameImage.Image = new Bitmap(auxiliar.GetImagePath());
+                _gameLabel.Text = listBox.SelectedItem.ToString();
+            }
+
+        }
+
+        private void _romList_Click(object sender, EventArgs e)
+        {
+            PlaySelectedGame();
+        }
+
+        public void MoveGameListUp()
+        {
+            if (_gamesPanel.Visible)
+            {
+                var selectedIndex = _romList.SelectedIndex;
+                if (selectedIndex == 0)
+                {
+                    selectedIndex = _romList.Items.Count - 1;
+                }
+                else
+                {
+                    selectedIndex--;
+                }
+                _romList.SelectedIndex = selectedIndex;
+            }
+        }
+
+        public void MoveGameListDown()
+        {
+            if (_gamesPanel.Visible)
+            {
+                var selectedIndex = _romList.SelectedIndex;
+                if (selectedIndex == (_romList.Items.Count - 1))
+                {
+                    selectedIndex = 0;
+                }
+                else
+                {
+                    selectedIndex++;
+                }
+                _romList.SelectedIndex = selectedIndex;
+            }
+        }
+
+        public void PlaySelectedGame()
+        {
+            var rom = _romList.SelectedItem.ToString();
+            var selectedRom = _roms.FirstOrDefault(x => x.GetRomName().Equals(rom));
+            if (selectedRom == null)
+            {
+                Utils.ShowError($"Rom wasn't found.");
+                return;
+            }
+            _joystick.Stop();
+            _console.Play(selectedRom);
+        }
+
+        private void NostalgicPlay_Activated(object sender, EventArgs e)
+        {
+            if (!_joystick.IsRunning())
+            {
+                _joystick.Start();
+            }
         }
     }
 }

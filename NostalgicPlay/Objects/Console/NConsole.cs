@@ -18,6 +18,29 @@ namespace NostalgicPlay.Objects
 
         protected abstract NConsoleEnum ConsoleEnum { get; }
 
+        protected virtual string Executable
+        {
+            get
+            {
+                try
+                {
+                    var files = System.IO.Directory.GetFiles(ConsolePath);
+                    if (files.Count(x => x.ToLower().EndsWith(".exe")) > 1)
+                    {
+                        throw new Exception();
+                    }
+                    var executableFull = files.FirstOrDefault(x => x.ToLower().EndsWith(".exe")).ToLower();
+                    return executableFull;
+                }
+                catch
+                {
+                    string exceptionMessage = $"It was impossible find Executable for {ConsoleEnum.ToString()} into {ConsolePath}.";
+                    exceptionMessage += " Exe is not present into folder or maybe exist more then one exe file.";
+                    throw new Exception(exceptionMessage);
+                }
+            }
+        }
+
         public List<Rom> Roms { get; private set; } = new List<Rom>();
         
         protected virtual string ConsolePath
@@ -35,10 +58,6 @@ namespace NostalgicPlay.Objects
                 return Utils.GetRomPath(ConsoleEnum);
             }
         }
-
-
-        protected abstract string ConsoleExecutable { get; }
-
 
         protected abstract string GetExutableArguments(Rom rom);
 
@@ -81,19 +100,13 @@ namespace NostalgicPlay.Objects
             }
         }
 
-        public string GetExecutableFullPath()
-        {
-            string path = $"{ConsolePath}{ConsoleExecutable}";
-            return path;
-        }
-
         public void Play(Rom rom)
         {
             
-            Process consoleRun = new Process();
-            consoleRun.StartInfo.FileName = GetExecutableFullPath();
-            consoleRun.StartInfo.Arguments = GetExutableArguments(rom);
-            consoleRun.Start();
+            Process consoleProcess = new Process();
+            consoleProcess.StartInfo.FileName = Executable;
+            consoleProcess.StartInfo.Arguments = GetExutableArguments(rom);
+            consoleProcess.Start();
 
         }
 
