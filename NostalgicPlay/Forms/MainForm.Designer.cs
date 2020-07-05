@@ -166,7 +166,7 @@
             this.Name = "NostalgicPlay";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NostalgicPlay";
-            
+            this.Activated += new System.EventHandler(this.NostalgicPlay_Activated);
             ((System.ComponentModel.ISupportInitialize)(this._mainPicPanel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.@__selectedGamePanel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._moveForward)).EndInit();

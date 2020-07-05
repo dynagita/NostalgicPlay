@@ -1,4 +1,5 @@
-﻿using NostalgicPlay.Objects;
+﻿using NostalgicPlay.Forms;
+using NostalgicPlay.Objects;
 using NostalgicPlay.Objects.Console;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,6 @@ namespace NostalgicPlay
             _joystick = new NJoystick(this);
             InitializeComponent();
             LoadConsoles();
-            _joystick.Start();
         }
 
         private void __selectedGamePanel_Click(object sender, EventArgs e)
@@ -93,10 +93,10 @@ namespace NostalgicPlay
 
             selectedIndex += howManyGamesToJump;
 
-            if (selectedIndex > _roms.Count -1)
+            if (selectedIndex > _roms.Count - 1)
             {
                 selectedIndex = selectedIndex - (_roms.Count - 1);
-                
+
             }
 
             _romList.SelectedIndex = selectedIndex;
@@ -205,7 +205,7 @@ namespace NostalgicPlay
             MoveSelectedBackward();
         }
 
-        public void ShowGameConsole()
+        private void ShowGameConsole()
         {
             try
             {
@@ -246,7 +246,7 @@ namespace NostalgicPlay
             CloseGameConsole();
         }
 
-        public void CloseGameConsole()
+        private void CloseGameConsole()
         {
             if (_gamesPanel.Visible)
             {
@@ -310,19 +310,71 @@ namespace NostalgicPlay
 
         public void PlaySelectedGame()
         {
-            var rom = _romList.SelectedItem.ToString();
-            var selectedRom = _roms.FirstOrDefault(x => x.GetRomName().Equals(rom));
-            if (selectedRom == null)
+            if (!_joystick.ControlledByEmulator())
             {
-                Utils.ShowError($"Rom wasn't found.");
-                return;
+                var rom = _romList.SelectedItem.ToString();
+                var selectedRom = _roms.FirstOrDefault(x => x.GetRomName().Equals(rom));
+                if (selectedRom == null)
+                {
+                    Utils.ShowError($"Rom wasn't found.");
+                    return;
+                }
+                _joystick.InformIsGaming();
+                _console.Play(selectedRom);
             }
-            _console.Play(selectedRom);
         }
 
         public void StopSelectedGame()
         {
             _console.Stop();
+        }
+
+        public void ConfirmAction()
+        {
+            if (_gamesPanel.Visible)
+            {
+                PlaySelectedGame();
+            }
+            else
+            {
+                ShowGameConsole();
+            }
+        }
+
+        public void EscAction()
+        {
+            if (_gamesPanel.Visible)
+            {
+                CloseGameConsole();
+            }
+        }
+
+        public void MapJoystick(bool forceRemap = false)
+        {
+            if (!_gamesPanel.Visible)
+            {
+                if (forceRemap)
+                {
+                    _joystick.Stop();
+                    _joystick.ResetMap();
+                }
+                ConfigForm config = new ConfigForm(_joystick);
+                config.Show();
+                config.StartConfiguration();
+            }
+        }
+
+        private void NostalgicPlay_Activated(object sender, EventArgs e)
+        {
+            if (!_joystick.IsMapped())
+            {
+                MapJoystick();
+            }
+            else
+            {
+                _joystick.Connect();
+                _joystick.Start();
+            }
         }
     }
 }

@@ -71,5 +71,15 @@ namespace NostalgicPlay.Objects
                 .MessageBox
                 .Show(message, "Erro", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
         }
+
+        public static string GetExceptionMessageRecursive(this Exception ex)
+        {
+            if (ex.InnerException == null)
+            {
+                return ex.Message;
+            }
+
+            return $"{ex.Message}\n\n{ex.InnerException.GetExceptionMessageRecursive()}";
+        }
     }
 }

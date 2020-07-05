@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using NostalgicPlay.Objects;
 namespace NostalgicPlay
 {
     static class Program
@@ -14,9 +14,16 @@ namespace NostalgicPlay
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new NostalgicPlay());
+            try
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new NostalgicPlay());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetExceptionMessageRecursive());
+            }
         }
     }
 }
