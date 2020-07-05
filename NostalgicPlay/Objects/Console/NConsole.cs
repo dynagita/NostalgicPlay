@@ -11,7 +11,7 @@ namespace NostalgicPlay.Objects
     public abstract class NConsole : INConsole
     {
         private Process _consoleProcess = null;
-        private bool _playing = false;
+        protected bool _playing = false;
         private bool IsImagePath(string path)
         {
             return Utils.IsImagePath(path);
@@ -26,6 +26,7 @@ namespace NostalgicPlay.Objects
                 try
                 {
                     var files = System.IO.Directory.GetFiles(ConsolePath);
+                    files = files.Where(x => !x.ToLower().Contains("unin")).ToArray();
                     if (files.Count(x => x.ToLower().EndsWith(".exe")) > 1)
                     {
                         throw new Exception();
@@ -101,7 +102,7 @@ namespace NostalgicPlay.Objects
             }
         }
 
-        public void Play(Rom rom)
+        public virtual void Play(Rom rom)
         {
             if (!_playing)
             {
@@ -110,10 +111,11 @@ namespace NostalgicPlay.Objects
                 _consoleProcess.StartInfo.Arguments = GetExutableArguments(rom);
                 _playing = true;
                 _consoleProcess.Start();
+                
             }
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
             if (_playing)
             {

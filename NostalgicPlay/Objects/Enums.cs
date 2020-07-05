@@ -12,7 +12,8 @@ namespace NostalgicPlay.Objects
         {
             Indefinido,
             MegaDrive,
-            SuperNintendo
+            SuperNintendo,
+            Nintendo64
         }        
     }
 }

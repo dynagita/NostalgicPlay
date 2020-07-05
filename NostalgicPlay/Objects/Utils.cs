@@ -57,6 +57,10 @@ namespace NostalgicPlay.Objects
             {
                 return NConsoleEnum.SuperNintendo;
             }
+            else if (str.Contains("nintendo64"))
+            {
+                return NConsoleEnum.Nintendo64;
+            }
             else
             {
                 return NConsoleEnum.Indefinido;

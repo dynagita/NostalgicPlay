@@ -17,6 +17,8 @@ namespace NostalgicPlay.Objects.Console
                     return new NMegaDriveConsole();
                 case NConsoleEnum.SuperNintendo:
                     return new NSuperNintendoConsole();
+                case NConsoleEnum.Nintendo64:
+                    return new NNintendo64Console();
                 default:
                     throw new NotImplementedException();
             }
