@@ -14,7 +14,7 @@ namespace NostalgicPlay.Objects
 
         public static string GetConsolePath(NConsoleEnum console)
         {
-            string configKey = $"{console.ToString()}Path";
+            string configKey = $"{console.ToString()}";
             var result = ConfigurationManager.AppSettings[configKey].ToString();
             if (!result.EndsWith("\\"))
             {
@@ -60,6 +60,10 @@ namespace NostalgicPlay.Objects
             else if (str.Contains("nintendo64"))
             {
                 return NConsoleEnum.Nintendo64;
+            }
+            else if (str.Contains("mame"))
+            {
+                return NConsoleEnum.Mame;
             }
             else
             {

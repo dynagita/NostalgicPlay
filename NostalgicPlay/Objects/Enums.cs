@@ -13,7 +13,8 @@ namespace NostalgicPlay.Objects
             Indefinido,
             MegaDrive,
             SuperNintendo,
-            Nintendo64
+            Nintendo64,
+            Mame
         }        
     }
 }

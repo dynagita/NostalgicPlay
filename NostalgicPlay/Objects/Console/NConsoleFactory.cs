@@ -19,6 +19,8 @@ namespace NostalgicPlay.Objects.Console
                     return new NSuperNintendoConsole();
                 case NConsoleEnum.Nintendo64:
                     return new NNintendo64Console();
+                case NConsoleEnum.Mame:
+                    return new NMameConsole();
                 default:
                     throw new NotImplementedException();
             }

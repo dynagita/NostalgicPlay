@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="Objects\ConsolesInfo.cs" />
     <Compile Include="Objects\Console\NConsoleFactory.cs" />
+    <Compile Include="Objects\Console\NMameConsole.cs" />
     <Compile Include="Objects\Console\NNintendo64Console.cs" />
     <Compile Include="Objects\Console\NSuperNintendoConsole.cs" />
     <Compile Include="Objects\Joystick\NJoystickConfig.cs" />
@@ -134,6 +135,9 @@
     <Content Include="Resource\arrowRight.png" />
     <Content Include="Resource\controller.ico" />
     <Content Include="Resource\mainPaper.jpg" />
+    <Content Include="Resource\Mame.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resource\megaDrive.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
